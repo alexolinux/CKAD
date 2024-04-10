@@ -30,7 +30,10 @@ spec:
         command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
       restartPolicy: Never
   backoffLimit: 4
+  activeDeadlineSeconds: 10
 ```
+
+> `activeDeadlineSeconds` sets a time limit for the Job to execute. If the Job exceeds this time limit, it will be terminated.
 
 ### Running an example of CronJob
 
