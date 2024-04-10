@@ -14,7 +14,7 @@ Shell example
 kubectl create job my-job --image=busybox --dry-run=client -o yaml -- /bin/sh -c 'echo Hello, world!'
 ```
 
-YAML Example
+YAML example
 
 ```yaml
 apiVersion: batch/v1
@@ -40,7 +40,7 @@ Shell example
 kubectl create cronjob my-cronjob --image=busybox --schedule="* * * * *" --dry-run=client -o yaml -- /bin/sh -c 'echo Hello, world!'
 ```
 
-YAML Example
+YAML example
 
 ```yaml
 apiVersion: batch/v1
