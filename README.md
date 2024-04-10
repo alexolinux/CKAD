@@ -4,4 +4,4 @@ Brief Journey to achieve the CKAD Certification
 
 -----------------------------------------------
 
-[Domains & Competencies](DOMAINS.md)
+[The Linux Foundation - Domains & Competencies](DOMAINS.md)
