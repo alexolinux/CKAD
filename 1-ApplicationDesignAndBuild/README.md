@@ -33,7 +33,9 @@ spec:
   activeDeadlineSeconds: 10
 ```
 
-> `activeDeadlineSeconds` sets a time limit for the Job to execute. If the Job exceeds this time limit, it will be terminated.
+- `backoffLimit` specifies the number of retries a CronJob should make before considering it as failed.
+
+- `activeDeadlineSeconds` sets a time limit for the Job to execute. If the Job exceeds this time limit, it will be terminated.
 
 ### Running an example of CronJob
 
@@ -65,6 +67,8 @@ spec:
             - -c
             - date; echo Hello from the Kubernetes cluster
           restartPolicy: OnFailure
+      backoffLimit: 4
+      activeDeadlineSeconds: 10
 ```
 
 ## Building Multi-Container Pods
