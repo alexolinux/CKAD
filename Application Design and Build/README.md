@@ -11,7 +11,7 @@
 Shell example
 
 ```shell
-kubectl get job <job_name> --dry-run=client -o yaml
+kubectl create job my-job --image=busybox --dry-run=client -o yaml -- /bin/sh -c 'echo Hello, world!'
 ```
 
 YAML Example
@@ -37,7 +37,7 @@ spec:
 Shell example
 
 ```shell
-kubectl get cronjob <cronjob_name> --dry-run=client -o yaml
+kubectl create cronjob my-cronjob --image=busybox --schedule="* * * * *" --dry-run=client -o yaml -- /bin/sh -c 'echo Hello, world!'
 ```
 
 YAML Example
