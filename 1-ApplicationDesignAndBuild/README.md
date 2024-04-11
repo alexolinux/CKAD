@@ -138,4 +138,30 @@ spec:
 
 ## init-containers
 
+Init-containers are specialized containers *that run and complete before the main application containers start*. They are primarily used to perform initialization tasks such as setup, configuration, or data preparation required by the main application containers. Init containers help ensure that the environment or dependencies necessary for the proper functioning of the main application are in place before it starts running. They run to completion and can share data with the main containers through shared volumes.
+
+YAML configuration for a Pod with an init container:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app.kubernetes.io/name: MyApp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox:1.28
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+  initContainers:
+  - name: init-myservice
+    image: busybox:1.28
+    command: ['sh', '-c', "until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+  - name: init-mydb
+    image: busybox:1.28
+    command: ['sh', '-c', "until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"]
+```
+
 ## Volumes
+
