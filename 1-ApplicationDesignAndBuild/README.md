@@ -165,3 +165,21 @@ spec:
 
 ## Volumes
 
+In the next example, a volume named "my-volume" is defined with an emptyDir type, and it is mounted to the path "/data" in the container named "my-container" running the nginx image:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+    volumeMounts:
+    - name: my-volume
+      mountPath: /data
+  volumes:
+  - name: my-volume
+    emptyDir: {}
+```
