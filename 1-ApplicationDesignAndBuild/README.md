@@ -183,3 +183,56 @@ spec:
   - name: my-volume
     emptyDir: {}
 ```
+
+Create configMap and access in Pods
+
+- `trauerweide.yaml` (configMap for ENV)
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trauerweide
+data:
+  tree: trauerweide
+```
+
+- `birke.yaml` (configMap for ENV File)
+
+```yaml
+apiVersion: v1
+data:
+  tree: birke
+  level: "3"
+  department: park
+kind: ConfigMap
+metadata:
+  name: birke
+```
+
+- `pod1.yaml` with these configMaps
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+  name: pod1
+spec:
+  containers:
+  - image: nginx:alpine
+    name: pod1
+    env:
+    - name: TREE1
+      valueFrom:
+        configMapKeyRef:
+          name: trauerweide
+          key: tree
+    volumeMounts:
+    - name: birke-volume
+      mountPath: /etc/birke
+  volumes:
+    - name: birke-volume
+      configMap:
+        name: birke
+```
