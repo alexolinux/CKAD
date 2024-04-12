@@ -201,13 +201,13 @@ data:
 
 ```yaml
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: birke
 data:
   tree: birke
   level: "3"
   department: park
-kind: ConfigMap
-metadata:
-  name: birke
 ```
 
 - `pod1.yaml` with these configMaps
