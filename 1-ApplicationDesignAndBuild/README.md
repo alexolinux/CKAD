@@ -275,7 +275,7 @@ spec:
   volumeName: my-pv
 ```
 
-- Create a Pod that mounts the PersistentVolumeClaim `my-pvc`:
+- Creating a Pod that mounts the PersistentVolumeClaim `my-pvc`:
 
 ```yaml
 apiVersion: v1
