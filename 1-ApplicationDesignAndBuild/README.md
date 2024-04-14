@@ -236,3 +236,61 @@ spec:
       configMap:
         name: birke
 ```
+
+An example that involves creating a PersistentVolume (PV), a PersistentVolumeClaim (PVC), and then mounting the PVC into a Pod in Kubernetes:
+
+- Creating a PersistentVolume `my-pv.yaml`:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: "/mnt/data"
+```
+
+- Creating a PersistentVolumeClaim `my-pvc.yaml` that requests storage from the PersistentVolume from `my-pv.yaml`:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: manual
+  volumeName: my-pv
+```
+
+- Create a Pod that mounts the PersistentVolumeClaim `my-pvc`:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: nginx
+      volumeMounts:
+        - name: my-persistent-storage
+          mountPath: /var/www/html
+  volumes:
+    - name: my-persistent-storage
+      persistentVolumeClaim:
+        claimName: my-pvc
+```
