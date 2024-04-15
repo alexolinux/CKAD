@@ -39,6 +39,8 @@ spec:
 
 ### Running an example of CronJob
 
+<https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs>
+
 Shell example
 
 ```shell
@@ -73,29 +75,39 @@ spec:
 
 ## Building Multi-Container Pods
 
+<https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns>
+
 Design Patterns for Multi-Container Pods:
 
 - **Sidecar Pattern**: In this pattern, a secondary container (sidecar) is attached to the main container to provide additional functionality, such as logging, monitoring, or proxying.
 - **Ambassador Pattern**: This pattern involves using a proxy container to abstract service discovery and network communication complexities from the main container.
 - **Adapter Pattern**: In this pattern, a separate container is used to modify or adapt data from a shared volume before passing it to the main container.
 
-### Sidecar Pattern
+### Example of Sidecar Pattern
+
+<https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers>
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sidecar-example
+  name: nginx-sidecar-example
+  labels:
+    app: nginx-sidecar
 spec:
   containers:
-  - name: main-container
-    image: main-container-image:latest
-    # Main application container
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+  - name: nginx-sidecar
+    image: nginx:latest
+    command: ["/bin/sh", "-c"]
+    args:
+    - "while true; do echo 'HTTP/1.1 200 OK\n\nSidecar Proxy'; done | nc -l -p 8080"
     ports:
     - containerPort: 8080
-  - name: sidecar-container
-    image: sidecar-container-image:latest
-    # Sidecar container for logging
+
 ```
 
 ### Ambassador Pattern
@@ -140,6 +152,8 @@ spec:
 
 Init-containers are specialized containers *that run and complete before the main application containers start*. They are primarily used to perform initialization tasks such as setup, configuration, or data preparation required by the main application containers. Init containers help ensure that the environment or dependencies necessary for the proper functioning of the main application are in place before it starts running. They run to completion and can share data with the main containers through shared volumes.
 
+<https://kubernetes.io/docs/concepts/workloads/pods/init-containers>
+
 YAML configuration for a Pod with an init container:
 
 ```yaml
@@ -165,6 +179,12 @@ spec:
 
 ## Volumes
 
+Volumes in Kubernetes is that they are directory-like structures that exist in a container's filesystem and can be shared among multiple containers in a pod. They enable data to persist beyond the lifetime of a single container and facilitate communication and data exchange between containers within the same pod.
+
+<https://kubernetes.io/docs/concepts/storage/volumes>
+
+### emptyDir Volumes
+
 In the next example, a volume named "my-volume" is defined with an emptyDir type, and it is mounted to the path "/data" in the container named "my-container" running the nginx image:
 
 ```yaml
@@ -184,7 +204,9 @@ spec:
     emptyDir: {}
 ```
 
-Create configMap and access in Pods
+### ConfigMap Volumes
+
+An example of use to create configMap volumes and access in Pods
 
 - `trauerweide.yaml` (configMap for ENV)
 
@@ -236,6 +258,8 @@ spec:
       configMap:
         name: birke
 ```
+
+### Persistent Volume, Persistent Volume Claim
 
 An example that involves creating a PersistentVolume (PV), a PersistentVolumeClaim (PVC), and then mounting the PVC into a Pod in Kubernetes:
 
