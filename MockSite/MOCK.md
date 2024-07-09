@@ -2,6 +2,8 @@
 
 ----------------
 
+## Mock01
+
 * Create a Namespace called **CKAD**
 * In Namespace **CKAD**, create a Pod named **web** with the image **nginx** version 2.3.5, exposing the port **80**
 * Verify the Pod is running (if not, fix it)
@@ -9,3 +11,7 @@
 * View the logs of Pod **web**
 * Delete Pod **web** and the Namespace **CKAD**
 
+<details>
+  <summary>Mock01-Solution</summary>
+
+</details>
