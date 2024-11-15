@@ -190,6 +190,7 @@ This Pod should use the image `nginx:alpine`.
         volumeMounts:
           - mountPath: "/var/www/nginx"
             name: log-volume
+    restartPolicy: Never
   ```
 
 </details>
