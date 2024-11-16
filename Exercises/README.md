@@ -194,3 +194,99 @@ This Pod should use the image `nginx:alpine`.
   ```
 
 </details>
+
+-----------
+
+## Deploy and Configure a Web Application
+
+You are given the task to deploy a simple web application called my-web-app that serves static content. You need to perform the following tasks:
+
+1. Deployment
+
+* Create a Deployment named `my-web-app` that uses the Docker image **nginxdemos/hello** (which serves a simple **"Hello World"** webpage).
+
+* The Deployment should have **3** replicas.
+
+2. Service Exposure
+
+* Expose this Deployment using a Service of type `ClusterIP`.
+
+* The Service should route traffic to port `80` on the Deployment.
+
+3. Configure Readiness and Liveness Probes
+
+* Ensure that the Deployment includes both readiness and liveness probes that check if the application is responsive. The probes should perform HTTP GET requests on the root path `/`.
+
+4. Scaling
+
+* After your Deployment is created, scale the number of replicas to **5**.
+
+## Solution
+
+<details>
+  <summary>Deploy web-app.yaml</summary>
+  
+  ```yaml
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: my-web-app
+    labels:
+      app: my-web-app
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: my-web-app
+    template:
+      metadata:
+        labels:
+          app: my-web-app
+      spec:
+        containers:
+          - image: nginxdemos/hello
+            name: hello
+            ports:
+              - containerPort: 80
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 5
+              periodSeconds: 10
+            livenessProbe:
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 10
+              periodSeconds: 20
+  ```
+
+</details>
+
+<details>
+  <summary>SVC web-app.yaml</summary>
+  
+  ```yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: svc-web-app
+    labels:
+      app: my-web-app
+  spec:
+    selector:
+      app: my-web-app
+    ports:
+      - port: 80
+        protocol: TCP
+        targetPort: 80
+  ```
+
+</details>
+
+* Scaling replicas
+
+```shell
+kubectl scale --current-replicas=3 --replicas=5 deployment/my-web-app
+```
