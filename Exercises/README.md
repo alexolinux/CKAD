@@ -290,3 +290,115 @@ You are given the task to deploy a simple web application called my-web-app that
 ```shell
 kubectl scale --current-replicas=3 --replicas=5 deployment/my-web-app
 ```
+
+-----------
+
+## Deploying a Custom Web Application
+
+You are tasked with deploying a simple web application that serves static HTML content. The application should be accessible via a Kubernetes Service. You will also need to ensure that the application can be easily updated.
+
+
+## Instructions
+
+1. Create a Deployment:
+
+* Name: web-app
+* Image: nginx:latest
+* Replicas: 3
+* Labels: app: web-app
+* Ensure that the Deployment is configured to restart on failure.
+
+2. Create a Service:
+
+* Name: web-app-service
+* Type: ClusterIP
+* Port: 80
+* Target Port: 80
+* Selector: Match the labels of the web-app Deployment.
+
+3. ConfigMap:
+
+* Create a ConfigMap named web-app-config that contains a key `index.html` with the following content:
+
+```html
+<html>
+<head><title>Custom Web App</title></head>
+<body><h1>Welcome to the Updated Kubernetes App!</h1></body>
+</html>
+```
+
+4. Volume Mount
+
+* Modify the Deployment to mount the ConfigMap as a volume so that the nginx server serves the `index.html` file from the ConfigMap.
+
+## Solution
+
+<details>
+  <summary>Deployment dep-app.yaml</summary>
+  
+  ```yaml
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: web-app
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: web-app
+    template:
+      metadata:
+        labels:
+          app: web-app
+      spec:
+        containers:
+        - name: nginx
+          image: nginx:latest
+          volumeMounts:
+          - name: web-content
+            mountPath: /usr/share/nginx/html/index.html
+            subPath: index.html
+        volumes:
+        - name: web-content
+          configMap:
+            name: web-app-config
+  ```
+
+</details>
+
+<details>
+  <summary>SVC svc-web-app.yaml</summary>
+  
+  ```yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: web-app-service
+  spec:
+    type: ClusterIP
+    ports:
+    - port: 80
+      targetPort: 80
+    selector:
+      app: web-app
+  ```
+
+</details>
+
+<details>
+  <summary>CM config-web-app.yaml</summary>
+  
+  ```yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: web-app-config
+  data:
+    index.html: |
+      <html>
+      <head><title>Welcome to My Web App</title></head>
+      <body><h1>Hello, Kubernetes!</h1></body>
+      </html>
+  ```
+
+</details>
